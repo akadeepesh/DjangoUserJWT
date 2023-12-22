@@ -1,4 +1,6 @@
 from dataclasses import fields
+import email
+from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
 from api.models import User
 
@@ -23,3 +25,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         return User.objects.create_user(**validate_data)  # type: ignore
+
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255)
+
+    class Meta:
+        model = User
+        fields = ["email", "password"]
