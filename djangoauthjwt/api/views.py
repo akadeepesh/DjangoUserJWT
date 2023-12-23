@@ -6,7 +6,6 @@ from api.serializers import (
     UserLoginSerializer,
     UserProfileSerializer,
     UserChangePasswordSerializer,
-    # SendPasswordResetEmailSerializer,
 )
 from django.contrib.auth import authenticate
 from api.renderers import UserRenderer
@@ -62,6 +61,19 @@ class UserLoginView(APIView):
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+
+class UserLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"msg": "Logout successful"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileView(APIView):
