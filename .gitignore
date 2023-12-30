@@ -1,7 +1,5 @@
-userenv
-migrations/
+venv
 __pycache__/
-__init__.py
 .vscode
 djangoauthjwt/db.sqlite3
 .env
