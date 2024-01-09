@@ -1,10 +1,24 @@
 from rest_framework import serializers
 from api.models import User
-from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.text import gettext_lazy as _
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-# from account.utils import Util
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    default_error_messages = {
+        'bad_token': _('Token is invalid or expired')
+    }
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail('bad_token')
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
