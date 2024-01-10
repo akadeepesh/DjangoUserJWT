@@ -6,6 +6,7 @@ from .views import (
     UserRegistrationView,
     UserLogoutView,
 )
+from . import views
 
 urlpatterns = [
     path("register/", UserRegistrationView.as_view(), name="register"),
@@ -13,4 +14,7 @@ urlpatterns = [
     path("profile/", UserProfileView.as_view(), name="profile"),
     path("changepassword/", UserChangePasswordView.as_view(), name="changepassword"),
     path("logout/", UserLogoutView.as_view(), name="logout"),
+    path("tokenize/", views.TokenizeSentence.as_view(), name="TokenizeSentence"),
+    path("remove_stop_words/", views.RemoveStopwords.as_view(), name="emoveStopwords"),
+    path('lemmatize/', views.LemmatizeWords.as_view(), name='Lemmatization'),
 ]

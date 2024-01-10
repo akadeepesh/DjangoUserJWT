@@ -6,13 +6,16 @@ from api.serializers import (
     UserLoginSerializer,
     UserProfileSerializer,
     UserChangePasswordSerializer,
-    # RefreshTokenSerializer,
 )
 from django.contrib.auth import authenticate
 from api.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import GenericAPIView
+
+from nltk.tokenize import word_tokenize
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 # Generate Token Manually
 def get_tokens_for_user(user):
@@ -64,15 +67,6 @@ class UserLoginView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-# class UserLogoutView(GenericAPIView):
-#     serializer_class = RefreshTokenSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request, *args):
-#         sz = self.get_serializer(data=request.data)
-#         sz.is_valid(raise_exception=True)
-#         sz.save()
-#         return Response({"msg":"Logged Out"}, status=status.HTTP_204_NO_CONTENT)
 from rest_framework_simplejwt.exceptions import TokenError
 class UserLogoutView(APIView):
     def post(self, request):
@@ -83,7 +77,6 @@ class UserLogoutView(APIView):
         except TokenError:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response("Success")
-# send refresh token from server then blacklist it.
     
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
@@ -106,3 +99,30 @@ class UserChangePasswordView(APIView):
         return Response(
             {"msg": "Password Changed Successfully"}, status=status.HTTP_200_OK
         )
+
+#-----------------------------------------Tokenization - RemovingStopWords - Lemmenization ------------------------------------------#
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+class TokenizeSentence(APIView):
+    def post(self, request):
+        sentence = request.data.get('sentence')
+        tokenized_sentence = word_tokenize(sentence)
+        return Response({"tokenized_sentence": tokenized_sentence})
+
+class RemoveStopwords(APIView):
+    def post(self, request):
+        sentence = request.data.get('sentence')
+        stop_words = set(stopwords.words('english'))
+        word_tokens = word_tokenize(sentence)
+        filtered_sentence = [w for w in word_tokens if not w in stop_words]
+        return Response({"filtered_sentence": filtered_sentence})
+
+class LemmatizeWords(APIView):
+    def post(self, request):
+        sentence = request.data.get('sentence')
+        lemmatizer = WordNetLemmatizer()
+        word_tokens = word_tokenize(sentence)
+        lemmatized_words = [lemmatizer.lemmatize(w) for w in word_tokens]
+        return Response({"lemmatized_words": lemmatized_words})
