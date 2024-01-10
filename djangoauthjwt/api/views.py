@@ -6,7 +6,7 @@ from api.serializers import (
     UserLoginSerializer,
     UserProfileSerializer,
     UserChangePasswordSerializer,
-    RefreshTokenSerializer,
+    # RefreshTokenSerializer,
 )
 from django.contrib.auth import authenticate
 from api.renderers import UserRenderer
@@ -47,6 +47,7 @@ class UserLoginView(APIView):
             email = serializer.data.get("email")  # type: ignore
             password = serializer.data.get("password")  # type: ignore
             user = authenticate(email=email, password=password)
+            print(user)
             token = get_tokens_for_user(user)
             if user is not None:
                 return Response(
@@ -63,16 +64,26 @@ class UserLoginView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-class UserLogoutView(GenericAPIView):
-    serializer_class = RefreshTokenSerializer
-    permission_classes = [IsAuthenticated]
+# class UserLogoutView(GenericAPIView):
+#     serializer_class = RefreshTokenSerializer
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args):
-        sz = self.get_serializer(data=request.data)
-        sz.is_valid(raise_exception=True)
-        sz.save()
-        return Response({"msg":"Logged Out"}, status=status.HTTP_204_NO_CONTENT)
-
+#     def post(self, request, *args):
+#         sz = self.get_serializer(data=request.data)
+#         sz.is_valid(raise_exception=True)
+#         sz.save()
+#         return Response({"msg":"Logged Out"}, status=status.HTTP_204_NO_CONTENT)
+# from rest_framework_simplejwt.exceptions import TokenError
+# class UserLogoutView(APIView):
+#     def post(self, request):
+#         try:
+#             refresh_token = request.data.get('refresh')
+#             token = RefreshToken(refresh_token)
+#             token.blacklist()
+#         except TokenError:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
+#         return Response("Success")
+    
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
