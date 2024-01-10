@@ -73,16 +73,17 @@ class UserLoginView(APIView):
 #         sz.is_valid(raise_exception=True)
 #         sz.save()
 #         return Response({"msg":"Logged Out"}, status=status.HTTP_204_NO_CONTENT)
-# from rest_framework_simplejwt.exceptions import TokenError
-# class UserLogoutView(APIView):
-#     def post(self, request):
-#         try:
-#             refresh_token = request.data.get('refresh')
-#             token = RefreshToken(refresh_token)
-#             token.blacklist()
-#         except TokenError:
-#             return Response(status=status.HTTP_401_UNAUTHORIZED)
-#         return Response("Success")
+from rest_framework_simplejwt.exceptions import TokenError
+class UserLogoutView(APIView):
+    def post(self, request):
+        try:
+            refresh_token = request.data.get('refresh')
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response("Success")
+# send refresh token from server then blacklist it.
     
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
