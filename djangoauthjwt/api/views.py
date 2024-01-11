@@ -12,7 +12,7 @@ from api.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -108,7 +108,12 @@ nltk.download('wordnet')
 class TokenizeSentence(APIView):
     def post(self, request):
         sentence = request.data.get('sentence')
-        tokenized_sentence = word_tokenize(sentence)
+        type = request.data.get('type')
+        tokenized_sentence = "Error"
+        if type == 'sentence':
+            tokenized_sentence = sent_tokenize(sentence)
+        elif type == 'word':
+            tokenized_sentence = word_tokenize(sentence)
         return Response({"tokenized_sentence": tokenized_sentence})
 
 class RemoveStopwords(APIView):
