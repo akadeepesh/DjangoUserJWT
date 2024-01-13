@@ -119,10 +119,16 @@ class TokenizeSentence(APIView):
 class RemoveStopwords(APIView):
     def post(self, request):
         sentence = request.data.get('sentence')
+        demand = request.data.get('demand')
         stop_words = set(stopwords.words('english'))
-        word_tokens = word_tokenize(sentence)
-        filtered_sentence = [w for w in word_tokens if not w in stop_words]
-        return Response({"filtered_sentence": filtered_sentence})
+        if demand == 'filtered':
+            word_tokens = word_tokenize(sentence)
+            filtered_sentence = [w for w in word_tokens if not w in stop_words]
+            return Response({"filtered_sentence": filtered_sentence})
+        elif demand =='stopwords':
+            return Response({"stopwords": stop_words})
+        else:
+            return Response("Error")
 
 class LemmatizeWords(APIView):
     def post(self, request):
