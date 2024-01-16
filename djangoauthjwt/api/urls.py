@@ -7,6 +7,7 @@ from .views import (
     UserLogoutView,
 )
 from . import views
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path("register/", UserRegistrationView.as_view(), name="register"),
@@ -17,4 +18,5 @@ urlpatterns = [
     path("tokenize/", views.TokenizeSentence.as_view(), name="TokenizeSentence"),
     path("remove_stop_words/", views.RemoveStopwords.as_view(), name="emoveStopwords"),
     path('lemmatize/', views.LemmatizeWords.as_view(), name='Lemmatization'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -120,7 +120,12 @@ class RemoveStopwords(APIView):
     def post(self, request):
         sentence = request.data.get('sentence')
         demand = request.data.get('demand')
-        stop_words = set(stopwords.words('english'))
+        customwords = request.data.get('customwords')
+        print("Sentence: ", sentence, "demand: ", demand, "customwords: ", customwords)
+        if demand == "edit":
+            return Response({"stop_words": set(customwords.replace(","," ").strip().split())})
+        else:
+            stop_words = set(stopwords.words('english'))
         if demand == 'filtered':
             word_tokens = word_tokenize(sentence)
             filtered_sentence = [w for w in word_tokens if not w in stop_words]
