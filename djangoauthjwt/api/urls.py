@@ -16,7 +16,7 @@ urlpatterns = [
     path("changepassword/", UserChangePasswordView.as_view(), name="changepassword"),
     path("logout/", UserLogoutView.as_view(), name="logout"),
     path("tokenize/", views.TokenizeSentence.as_view(), name="TokenizeSentence"),
-    path("remove_stop_words/", views.RemoveStopwords.as_view(), name="emoveStopwords"),
-    path('lemmatize/', views.LemmatizeWords.as_view(), name='Lemmatization'),
+    path("remove_stop_words/", views.RemoveStopwords.as_view(), name="RemoveStopwords"),
+    path('stemlem/', views.StemLemWords.as_view(), name='Stemming Lemmatization'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

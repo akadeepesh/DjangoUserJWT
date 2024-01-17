@@ -16,6 +16,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 
 # Generate Token Manually
 def get_tokens_for_user(user):
@@ -109,11 +110,15 @@ class TokenizeSentence(APIView):
     def post(self, request):
         sentence = request.data.get('sentence')
         type = request.data.get('type')
-        tokenized_sentence = "Error"
+
+        tokenized_sentence = "Wrong Type"
+
         if type == 'sentence':
             tokenized_sentence = sent_tokenize(sentence)
+
         elif type == 'word':
             tokenized_sentence = word_tokenize(sentence)
+            
         return Response({"tokenized_sentence": tokenized_sentence})
 
 class RemoveStopwords(APIView):
@@ -121,24 +126,37 @@ class RemoveStopwords(APIView):
         sentence = request.data.get('sentence')
         demand = request.data.get('demand')
         customwords = request.data.get('customwords')
-        print("Sentence: ", sentence, "demand: ", demand, "customwords: ", customwords)
+
         if demand == "edit":
             return Response({"stop_words": set(customwords.replace(","," ").strip().split())})
         else:
             stop_words = set(stopwords.words('english'))
+
         if demand == 'filtered':
             word_tokens = word_tokenize(sentence)
             filtered_sentence = [w for w in word_tokens if not w in stop_words]
             return Response({"filtered_sentence": filtered_sentence})
+        
         elif demand =='stopwords':
             return Response({"stopwords": stop_words})
+        
         else:
             return Response("Error")
 
-class LemmatizeWords(APIView):
+class StemLemWords(APIView):
     def post(self, request):
         sentence = request.data.get('sentence')
-        lemmatizer = WordNetLemmatizer()
+        method = request.data.get('method')
+
         word_tokens = word_tokenize(sentence)
-        lemmatized_words = [lemmatizer.lemmatize(w) for w in word_tokens]
-        return Response({"lemmatized_words": lemmatized_words})
+        shorted_words = "Wrong Method"
+
+        if method == 'lemmatize':
+            lemmatizer = WordNetLemmatizer()
+            shorted_words = [lemmatizer.lemmatize(w) for w in word_tokens]
+
+        elif method =='stemming':
+            stemmer = PorterStemmer()
+            shorted_words = [stemmer.stem(w) for w in word_tokens]
+
+        return Response({"shorted_words": shorted_words})
