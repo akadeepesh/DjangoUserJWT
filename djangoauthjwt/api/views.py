@@ -125,7 +125,7 @@ class RemoveStopwords(APIView):
     def post(self, request):
         sentence = request.data.get('sentence')
         demand = request.data.get('demand')
-        customwords = request.data.get('customwords')
+        customwords = request.data.get('customwords', None)
 
         if demand == "edit":
             return Response({"stop_words": set(customwords.replace(","," ").strip().split())})
@@ -160,3 +160,24 @@ class StemLemWords(APIView):
             shorted_words = [stemmer.stem(w) for w in word_tokens]
 
         return Response({"shorted_words": shorted_words})
+    
+from scipy.io import wavfile
+import noisereduce as nr
+
+class NoiseReduction(APIView):
+    def post(self, request):
+        wavfile = request.data.get('wavfile')
+        noisefile = request.data.get('noisefile', None)
+        # loading data
+        rate, data = wavfile.read(wavfile)
+        
+        if noisefile is not None:
+            rate_noise, noise_data = wavfile.read(noisefile)
+            # performming noise reduction with noise file
+            reduced_noise = nr.reduce_noise(y=data, sr=rate, y_noise=noise_data)
+        else:
+            # performming noise reduction without noise file
+            reduced_noise = nr.reduce_noise(y=data, sr=rate)
+        
+        wavfile.write("mywav_reduced_noise.wav", rate, reduced_noise)
+        return Response({"noise_reduced": "mywav_reduced_noise.wav"})
