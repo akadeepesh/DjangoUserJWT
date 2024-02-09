@@ -101,7 +101,7 @@ class UserChangePasswordView(APIView):
             {"msg": "Password Changed Successfully"}, status=status.HTTP_200_OK
         )
 
-#-----------------------------------------Tokenization - RemovingStopWords - Lemmenization ------------------------------------------#
+#-----------------------------------------Tokenization - RemovingStopWords - Lemmenization etc ------------------------------------------#
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -161,25 +161,12 @@ class StemLemWords(APIView):
 
         return Response({"shorted_words": shorted_words})
     
-# from scipy.io import wavfile
-# import noisereduce as nr
-
-class NoiseReduction(APIView):
-    def post(self, request):
-        print("Request : ",request.FILES["audio_file"])
-        return Response("success")
-        # wavfile = request.data.get('wavfile')
-        # noisefile = request.data.get('noisefile', None)
-        # # loading data
-        # rate, data = wavfile.read(wavfile)
-        
-        # if noisefile is not None:
-        #     rate_noise, noise_data = wavfile.read(noisefile)
-        #     # performming noise reduction with noise file
-        #     reduced_noise = nr.reduce_noise(y=data, sr=rate, y_noise=noise_data)
-        # else:
-        #     # performming noise reduction without noise file
-        #     reduced_noise = nr.reduce_noise(y=data, sr=rate)
-        
-        # wavfile.write("mywav_reduced_noise.wav", rate, reduced_noise)
-        # return Response({"noise_reduced": "mywav_reduced_noise.wav"})
+# class NoiseReduction(APIView):
+#     def post(self, request):
+#         print("Request : ",request.FILES["audio_file"])
+#         audio = request.FILES["audio_file"]
+#         noise = request.FILES["noise_file"]
+#         if noise is not None:
+#             return Response(f"We have recived your files {audio} and {noise} but not able to process them \n It's not you It's us, This issue will be fixed")
+#         else:
+#             return Response(f"We have recived your file {audio} but not able to process it \n It's not you It's us, This issue will be fixed")
