@@ -1,13 +1,18 @@
 {
-    "builds": [{
-        "src": "djangoauthjwt/wsgi.py",
-        "use": "@ardnt/vercel-python-wsgi",
-        "config": { "maxLambdaSize": "15mb" }
-    }],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "djangoauthjwt/wsgi.py"
-        }
-    ]
+  "builds": [
+    {
+      "src": "djangoauthjwt/wsgi.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "build_files.sh",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "djangoauthjwt/wsgi.py"
+    }
+  ]
 }
